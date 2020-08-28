@@ -20,7 +20,7 @@ use App\Forms\Fields\CheckboxesField;
 use App\Forms\Fields\MultiSelectField;
 use App\Forms\Fields\Interfaces\HasArrayValues;
 
-class FormComponent extends Component
+abstract class FormComponent extends Component
 {
     use HasRules;
 
@@ -34,23 +34,15 @@ class FormComponent extends Component
 
     private $fields = [];
     
-    public $form_data = [
-        'tesing' => [
-            'Ruby' => 2,
-            'JAVA' => 3,
-        ]
+    public $form_data = [];
+
+    protected $listeners = [
+        'multiSelectSearch'
     ];
-
-    public $form_data_copy = [];
-
-    protected $listeners = ['fileUpdate', 'multiSelectRemove', 'multiSelectSearch', 'multiSelectClick'];
 
     public function mount()
     {
         $this->setFormProperties();
-
-
-        // $user->load('avatar');
     }
 
     public function updated($field)
@@ -62,52 +54,10 @@ class FormComponent extends Component
 
     public function updateFields()
     {
-        $this->setFields();
         $this->setHiddenFields();
     }
 
-    private function setFields()
-    {
-        $this->fields = [];
-
-        $this->addField(InputField::class, 'Nome', 'name')
-            ->hiddenIf(function ($values) {
-                return $values['is_admin'] == true;
-            })
-            ->size(6);
-        
-        $this->addField(SelectField::class, 'Gênero', 'gender')
-            ->options([
-                'Masculino' => 'm',
-                'Fêminino' => 'f'
-            ])
-            ->size(6);
-
-        $this->addField(CheckboxField::class, 'Admin', 'is_admin')
-            ->default(false);
-        
-        
-
-        $this->addField(MultiSelectField::class, 'Que tipo de música você curte ?', 'musics')
-            ->options([
-                'Rock' => 'rock',
-                'Hip hop' => 'hip_hop',
-                'Samba' => 'samba'
-            ])
-            ->rules([
-                'required',
-                '.*' => Rule::in(['Teste222']),
-            ]);
-
-        $this->addField(FileField::class, 'Avatar')
-            ->dir('avatar')
-            ->disk('images')
-            ->multiple()
-            ->accept('image/*')
-            ->rules(['required']);
-
-        $this->addField(RichTextField::class, 'Escreva um pouco sobre você', 'about');
-    }
+    abstract protected function setFields();
 
     public function setHiddenFields()
     {
@@ -116,7 +66,7 @@ class FormComponent extends Component
         }
     }
 
-    private function addField($field, $label, $name = null)
+    protected function addField($field, $label, $name = null)
     {
         $fieldClass = app($field, [
             'label' => $label,
@@ -141,51 +91,15 @@ class FormComponent extends Component
 
     public function fields()
     {
+        $this->fields = [];
+
+        $this->setFields();
+
         return $this->fields;
-        // is_hidden
-
-        $fields = [
-            InputField::make('Nome', 'name'),
-            InputField::make('Email', 'email')->type('email'),
-            InputField::make('Senha', 'password')->type('password'),
-            
-            FileField::make('Avatar')
-                ->dir('avatar')
-                ->disk('images')
-                ->multiple()
-                ->accept('image/*')
-                ->rules(['required']),
-
-            MultiSelectField::make('tesing')
-                ->options([
-                    'teste',
-                    'hellow'
-                ])
-                ->rules([
-                    'required',
-                    '.*' => Rule::in(['Teste222']),
-                ]),
-            MultiSelectField::make('tesing2')
-                ->options(function ($keyword) {
-                    return User::where('email', 'like', "%{$keyword}%")->limit(10)->get()->pluck('id', 'email')->toArray();
-                })
-                ->rules([
-                    'required'
-                ]),
-            RichTextField::make('richtext')
-        ];
-
-        if (!empty($this->form_data['name']) && $this->form_data['name']  == 'teste') {
-            $fields[] = InputField::make('Password')->type('password');
-        }
-        
-        return $fields;
     }
 
     public function setFormProperties($model = null)
     {
-        $this->setFields();
-
         $this->model = $model;
         if ($model) {
             $this->form_data = $model->toArray();
@@ -205,7 +119,6 @@ class FormComponent extends Component
     {
         return view('livewire.form-component', [
             'fields' => $this->getAvailableFields()
-            // 'fields' => $this->fields()
         ]);
     }
 
@@ -216,12 +129,7 @@ class FormComponent extends Component
 
     public function submit()
     {
-        // dd($this->form_data);
-
-        
         $this->validate($this->rules());
-
-        dd('passou');
 
         $field_names = [];
         foreach ($this->fields() as $field) {
@@ -239,33 +147,26 @@ class FormComponent extends Component
         return str_replace('form data.', '', $message);
     }
 
-    public function success()
-    {
-        $this->model->avatar()->update($this->form_data['avatar']);
-        // $user->avatar()->save(new Media($this->form_data['avatar']));
-        dd(
-            $user
-        );
-    }
+    abstract protected function success();
 
-    public function saveAndStay()
+    protected function saveAndStay()
     {
         $this->submit();
         $this->saveAndStayResponse();
     }
 
-    public function saveAndStayResponse()
+    protected function saveAndStayResponse()
     {
         //
     }
 
-    public function saveAndGoBack()
+    protected function saveAndGoBack()
     {
         $this->submit();
         $this->saveAndGoBackResponse();
     }
 
-    public function saveAndGoBackResponse()
+    protected function saveAndGoBackResponse()
     {
         //
     }

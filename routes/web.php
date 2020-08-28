@@ -9,7 +9,8 @@ Route::group(['middleware' => 'web'], function () {
 });
 
 Route::section('body')->group(function () {
-    Route::livewire('/', 'form-component');
+    Route::livewire('/', 'forms.user-form');
+    // Route::livewire('/', 'form-component');
     Route::livewire('/{user}', 'form-component');
 });
 

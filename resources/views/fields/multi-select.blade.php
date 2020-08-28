@@ -73,5 +73,8 @@
         </div>
     </div>
     @include('fields.error-help')
-    @include('fields.error-help', ['key' => $field->key . ".*"])
+    @include('fields.error-help', [
+        'key' => $field->key . ".*",
+        'help' => false
+    ])
 </div>
