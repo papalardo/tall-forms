@@ -11,10 +11,10 @@ trait HasRules
         $rules = [];
         $rules_ignore = $realtime ? $this->rulesIgnoreRealtime() : [];
 
-        foreach ($this->fields() as $key => $field) {
+        foreach ($this->getAvailableFields() as $key => $field) {
             if ($field->rules) {
-                foreach($this->fieldRules($field, $rules_ignore) as $key => $rule) {
-                    if(is_string($key)) {
+                foreach ($this->fieldRules($field, $rules_ignore) as $key => $rule) {
+                    if (is_string($key)) {
                         $rules[$field->key . $key] = $rule;
                     } else {
                         $rules[$field->key] = $rule;

@@ -13,11 +13,11 @@ use App\Http\Livewire\FormComponent;
 use App\Forms\Fields\MultiSelectField;
 use App\Forms\Fields\DateTimePickerField;
 
-class UserForm extends FormComponent
+class UserFormEdit extends FormComponent
 {
-    public function mount()
+    public function mount(User $user)
     {
-        $this->setFormProperties();
+        $this->setFormProperties($user);
     }
 
     protected function setFields()
@@ -88,13 +88,11 @@ class UserForm extends FormComponent
 
     public function success()
     {
-        $user = User::first();
-        
-        $user->update([
+        $this->model->update([
             'email_verified_at' => $this->form_data['email_verified_at']
         ]);
         dd(
-            $user->toArray(),
+            $this->model->toArray(),
             $this->form_data
         );
         // User::create($this->form_data);

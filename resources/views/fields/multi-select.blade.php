@@ -15,10 +15,19 @@
                     onMount()
                 }"
                 wire:ignore
-                x-on:click.away="open = false"
+                x-on:click.away="
+                    open = false
+                    search = ''
+                "
             >
-                <div class="w-full " x-ref="input">
-                    <div class="p-1 flex form-input">
+                <div class="w-full" 
+                    x-ref="containerInput" 
+                    x-on:click="
+                        $refs.input.focus()
+                        open = true
+                    "
+                    >
+                    <div x-bind:class="['p-1 flex form-input', open ? 'shadow-outline': '']">
                         <div class="flex flex-auto flex-wrap">
                             <template x-for="([label, value]) in Object.entries(selectedValues)">
                                 <div class="flex justify-center items-center m-1 font-medium py-1 px-2 bg-white rounded-full text-teal-700 bg-teal-100 border border-teal-300">
@@ -34,7 +43,17 @@
                                 </div>
                             </template>
                             <div class="flex-1">
-                                <input autocomplete="none" class="bg-transparent p-1 px-2 appearance-none outline-none h-full w-full text-gray-800" x-on:focus="open = true" id="{{ $field->key }}" x-model.debounce.1000ms="search">
+                                <input
+                                    x-ref="input"
+                                    autocomplete="none" 
+                                    class="bg-transparent p-1 px-2 appearance-none outline-none h-full w-full text-gray-800" 
+                                    id="{{ $field->key }}" 
+                                    @if($field->is_realtime_search))
+                                        x-model.debounce.500ms="search"
+                                    @else 
+                                        x-model="search"
+                                    @endif
+                                >
                             </div>
                         </div>
                         <div class="text-gray-300 w-8 py-1 pl-2 pr-1 border-l flex items-center border-gray-200" x-on:click="open = !open">
@@ -47,12 +66,17 @@
                     </div>
                 </div>
                 <div 
-                    class="absolute shadow top-100 bg-white z-40 w-full lef-0 rounded max-h-select overflow-y-auto" 
+                    class="absolute top-100 bg-white z-40 w-full lef-0 rounded max-h-select overflow-y-auto shadow-md border border-gray-200" 
                     x-show="open" 
                     x-bind:style="['top: ' + topPositionOptions + 'px']"
                     x-cloak
                 >
                     <div class="flex flex-col w-full" style="max-height: 20rem">
+                        <div class="cursor-wait w-full border-gray-100 rounded-t border-b" x-show="busy">
+                            <div class="flex w-full items-center justify-center p-2 pl-2 border-transparent">
+                                <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-3 w-3"></div>
+                            </div>
+                        </div>
                         <template x-for="([label, value]) in Object.entries(realtimeSearchEnabled ? options : filtredOptions)">
                             <div class="cursor-pointer w-full border-gray-100 rounded-t border-b hover:bg-teal-100" x-on:click="toggle($dispatch, label, value)">
                                 <div x-bind:class="{'flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-teal-600': true, 'border-teal-600': selectedValues.hasOwnProperty(label) }" x-key="value">
@@ -62,9 +86,9 @@
                                 </div>
                             </div>
                         </template>
-                        <div class="cursor-wait w-full border-gray-100 rounded-t border-b" x-show="busy">
+                        <div class="w-full border-gray-100 rounded-t border-b" x-show="!busy && Object.entries(realtimeSearchEnabled ? options : filtredOptions).length <= 0">
                             <div class="flex w-full items-center justify-center p-2 pl-2 border-transparent">
-                                <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-3 w-3"></div>
+                                Nenhum resultado encontrado
                             </div>
                         </div>
                     </div>

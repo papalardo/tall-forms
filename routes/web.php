@@ -11,7 +11,7 @@ Route::group(['middleware' => 'web'], function () {
 Route::section('body')->group(function () {
     Route::livewire('/', 'forms.user-form');
     // Route::livewire('/', 'form-component');
-    Route::livewire('/{user}', 'form-component');
+    Route::livewire('/{user}', 'forms.user-form-edit');
 });
 
 // Route::get('/', function () {

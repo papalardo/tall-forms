@@ -16,7 +16,7 @@ window.alpineMultiSelectField = (args) => {
         selectedValues: args.selectedValues || {},
         topPositionOptions: 0,
         setPositionOptions() {
-            this.topPositionOptions = this.$refs.input.offsetHeight + 5
+            this.topPositionOptions = this.$refs.containerInput.offsetHeight + 5
         },
         toggle($dispatch, key, value) {
             if(this.selectedValues.hasOwnProperty(key)) {
@@ -50,6 +50,7 @@ window.alpineMultiSelectField = (args) => {
             })
 
             this.$watch('search', value => {
+                console.log('search ==>', value);
                 this.searchOptions()
             })
 

@@ -87,7 +87,7 @@ trait UploadsFiles
     public function handleFiles()
     {
         foreach ($this->fields() as $field) {
-            if ($field instanceof FileField) {
+            if ($field instanceof FileField && !empty($this->form_data[$field->name])) {
                 if ($field->is_multiple) {
                     foreach ($this->form_data[$field->name] as $key => $file) {
                         if ($this->moveFileFromTempDisk($file['path'], $field->disk)) {

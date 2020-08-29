@@ -18,9 +18,10 @@ use App\Forms\Fields\CheckboxField;
 use App\Forms\Fields\RichTextField;
 use App\Forms\Fields\CheckboxesField;
 use App\Forms\Fields\MultiSelectField;
+use App\Forms\Fields\DateTimePickerField;
 use App\Forms\Fields\Interfaces\HasArrayValues;
 
-abstract class FormComponent extends Component
+class FormComponent extends Component
 {
     use HasRules;
 
@@ -40,9 +41,9 @@ abstract class FormComponent extends Component
         'multiSelectSearch'
     ];
 
-    public function mount()
+    protected function setFields()
     {
-        $this->setFormProperties();
+        //
     }
 
     public function updated($field)
@@ -56,8 +57,6 @@ abstract class FormComponent extends Component
     {
         $this->setHiddenFields();
     }
-
-    abstract protected function setFields();
 
     public function setHiddenFields()
     {
@@ -110,6 +109,9 @@ abstract class FormComponent extends Component
                 $array = $field instanceof HasArrayValues || (property_exists($field, 'is_multiple') && $field->is_multiple);
                 $this->form_data[$field->name] = $field->default ?? ($array ? [] : null);
             }
+            if ($field instanceof DateTimePickerField && isset($this->form_data[$field->name])) {
+                $this->form_data[$field->name] = $model->{$field->name}->format('Y-m-d H:i:s');
+            }
         }
 
         $this->setHiddenFields();
@@ -147,7 +149,10 @@ abstract class FormComponent extends Component
         return str_replace('form data.', '', $message);
     }
 
-    abstract protected function success();
+    protected function success()
+    {
+        //
+    }
 
     protected function saveAndStay()
     {

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
+use App\Forms\Fields\InputField;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(InputField::class, function ($app, $params) {
+            return InputField::make($params['label'], $params['name'])
+                ->type('number');
+        });
     }
 
     /**
@@ -23,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        setlocale(LC_TIME, config('app.locale'));
+        Carbon::setLocale(config('app.locale'));
     }
 }
