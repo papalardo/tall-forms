@@ -1,0 +1,1 @@
+<input type="hidden" class="hidden" name="{{ $field->getName() }}" value="{{ $field->getValue() }}" />

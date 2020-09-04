@@ -1,4 +1,8 @@
 {
+    "/js/chunks/date-time-picker.js": "/js/chunks/date-time-picker.js?id=4718a05f3a6ea8a194bc",
+    "/js/chunks/rich-text-component.js": "/js/chunks/rich-text-component.js?id=6437c66d9d2bfa9f96ac",
+    "/js/chunks/multi-select.js": "/js/chunks/multi-select.js?id=4ab315195ec144f22a75",
     "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css"
+    "/css/app.css": "/css/app.css",
+    "/js/chunks/file-input.js": "/js/chunks/file-input.js?id=291a7777a82e7409eacf"
 }

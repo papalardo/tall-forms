@@ -9,7 +9,7 @@ use App\Forms\Fields\InputField;
 use App\Forms\Fields\SelectField;
 use App\Forms\Fields\CheckboxField;
 use App\Forms\Fields\RichTextField;
-use App\Http\Livewire\FormComponent;
+use App\Forms\LivewireForms\FormComponent;
 use App\Forms\Fields\MultiSelectField;
 use App\Forms\Fields\DateTimePickerField;
 

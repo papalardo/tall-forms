@@ -3,8 +3,9 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
-use App\Forms\Fields\InputField;
 use Illuminate\Support\ServiceProvider;
+use App\FormFields\LivewireFields\Fields\InputField;
+use App\FormFields\LivewireFields\Config\ConfigLivewireFields;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,10 +16,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(InputField::class, function ($app, $params) {
-            return InputField::make($params['label'], $params['name'])
-                ->type('number');
+        $this->app->bind(InputField::class, function ($app, $params = []) {
+            return new InputField($params['label'], $params['name']);
         });
+
+        $this->app->singleton(ConfigLivewireFields::class, function () {
+            return new ConfigLivewireFields();
+        });
+
+        ConfigLivewireFields::make()
+            ->widthSize(12);
     }
 
     /**

@@ -21,3 +21,11 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.form-input .ql-toolbar.ql-snow, .form-input .ql-container.ql-snow {
+    border: none
+}
+/* TODO :: Import style from tailwind */
+.form-input .ql-toolbar.ql-snow {
+    border-bottom: 1px solid #e2e8f0
+}

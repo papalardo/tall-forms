@@ -1,22 +1,23 @@
+// Compatibilidade com livewire
+import 'livewire-vue'
+
+import Vue from 'vue'
+
 require('./bootstrap');
-
-import format from 'date-fns/format';
-// import dateIsEqual from 'date-fns/is_equal'
-
-// window.dateIsEqual = dateIsEqual
-window.formatDate = format
 
 require('./alpine/fields/multiselect')
 
-require('./vendor/quill.js');
-window.Quill = require('Quill');
+Vue.config.productionTip = false;
 
-require('quill/dist/quill.snow.css')
-require('quill/dist/quill.bubble.css')
+Vue.component('rich-text', () => import('./components/RichTextEditor/RichTextEditor' /* webpackChunkName: "rich-text-component" */))
+Vue.component('date-time-picker', () => import('./components/DateTimePicker' /* webpackChunkName: "date-time-picker" */))
+Vue.component('multi-select', () => import('./components/MultiSelect' /* webpackChunkName: "multi-select" */))
+Vue.component('file-input', () => import('./components/FileInput' /* webpackChunkName: "file-input" */))
 
-/* Make Alpine wait until Livewire is finished rendering to do its thing. */
-window.deferLoadingAlpine = function (callback) {
-    window.addEventListener('livewire:load', function () {
-        callback();
-    });
-};
+window.Vue = Vue;
+
+require('./components/livewireUseAsyncComponents')
+
+new Vue({
+    el: '#app'
+})
